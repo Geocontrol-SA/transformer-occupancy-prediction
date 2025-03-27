@@ -1,0 +1,32 @@
+{
+  "data_path": "data",
+  "batch_size": 128,
+  "num_workers": 4,
+
+  "input_dim": 8,
+  "hidden_dim": 1024,
+  "nhead": 8,
+  "num_encoder_layers": 6,
+  "num_classes": 3,
+  "dropout": 0.2,
+  "use_positional_encoding": true,
+  "max_seq_len": 100,
+  "use_cls_token": true,
+
+  "epochs": 50000,
+  "optimizer": "adamw",
+  "learning_rate": 0.00003,
+  "weight_decay": 0.01,
+  "scheduler": "plateau",
+  "scheduler_factor": 0.5,
+  "scheduler_patience": 5,
+  "min_lr": 1e-6,
+  "T_max": 10,
+  "step_size": 10,
+  "early_stopping_patience": 1000,
+  "use_class_weights": true,
+
+  "device": "cuda",
+  "checkpoint_dir": "checkpoints",
+  "seed": 42
+}
