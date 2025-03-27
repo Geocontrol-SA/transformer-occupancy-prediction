@@ -35,6 +35,63 @@ python metrics_viz.py
 python inference.py --data data  --checkpoint checkpoints/best_model_acc.pt --config checkpoints/config.json --output output/test_inference.csv  --device cuda
 ```
 
+## Docker Usage
+
+You can run the project using Docker with GPU support:
+
+
+**⚠️ Warning:** The base Docker image is large and can exceed 5GB in size due to PyTorch and CUDA dependencies. Make sure you have sufficient disk space before building the image.
+
+1. Build the Docker image:
+```bash
+docker build -t transformer-occupancy-prediction .
+```
+
+2. Run the container with:
+- GPU support enabled
+- Configuration file mounted
+- Output directory mounted for saving results
+- Checkpoints directory mounted for model persistence
+- Data directory mounted as specified in config.json (required for training/inference)
+
+Example command:
+```bash
+# First extract the data
+tar -xvjf data.tar.bz2
+
+# Then run the container with all necessary volumes
+docker run --gpus all \
+  -v $(pwd)/config.json:/app/config.json \
+  -v $(pwd)/output:/app/output \
+  -v $(pwd)/checkpoints:/app/checkpoints \
+  -v $(pwd)/data:/app/data \  # Mount data directory as specified in config.json
+  transformer-occupancy-prediction
+```
+
+Note: The data directory mount (-v $(pwd)/data:/app/data) must match the "data_path" setting in your config.json file.
+
+To run with a different config file or command:
+
+```bash
+# Use a different config file
+docker run --gpus all \
+  -v $(pwd)/custom-config.json:/app/custom-config.json \
+  -v $(pwd)/output:/app/output \
+  -v $(pwd)/checkpoints:/app/checkpoints \
+  -v $(pwd)/data:/app/data \
+  transformer-occupancy-prediction python train.py --config custom-config.json
+
+# Run inference instead of training
+docker run --gpus all \
+  -v $(pwd)/config.json:/app/config.json \
+  -v $(pwd)/output:/app/output \
+  -v $(pwd)/checkpoints:/app/checkpoints \
+  -v $(pwd)/data:/app/data \
+  transformer-occupancy-prediction python inference.py --data data --checkpoint checkpoints/model.pt --config config.json --output output/predictions.csv --device cuda
+```
+
+Note: Ensure you have the NVIDIA Container Toolkit installed on your host system to enable GPU support.
+
 ## Installation
 
 1. Clone the repository:
@@ -209,4 +266,3 @@ For questions and support, please open an issue in the repository's issue tracke
 ## License
 
 [Add License Information]
-
