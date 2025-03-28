@@ -1,0 +1,26 @@
+.idea
+*.iml
+.venv*
+*.log
+transcol
+known_faces
+images/
+*.pt
+*.dat
+**/__pycache__/**
+inmet*
+var
+.env
+data*
+mini_data/
+unsloth_compiled_cache/
+.ipynb_checkpoints
+weight_models_sft
+logs
+results
+tuned_*
+# .vscode
+/**/.vitepress/cache
+node_modules
+**.orig
+launch_*

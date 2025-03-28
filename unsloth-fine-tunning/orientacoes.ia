@@ -1,0 +1,104 @@
+Descreva uma parte de um aritgo ciêntífico, em que o contexto maior é a previsão de ocupação do ônibus, que está em 3 níveis, vazio 0, cheio 1, lotado 2. 
+Então uma das possíveis soluções foi usar uma rede GPT já treinada para tal desafio, para serem submedtidas ao processo de fine tune. Então sabendo que essas redes são especializadas em texto,  os dados foram obtidos do sistema de ônibus, foram convertidos em dados de texto aplicando se a pergunta com base no dia da semana e horário de saída no sistema e o horário de saída real do ônibus, também é informado na pergunta as condições climáticas, se o dia está quente, maior que 27ºC, normal entre 18ºC e 27ºC e frio menor que 18ºC, e ainda as condições de preciptação, sem chuva, chuva leve, e chuva pesada.
+
+Exemplo de pergunta e resposta na qual o fine tune ocorreu:
+
+<human>: Thursday, no rain and warm, route 2296, scheduled at 00:01 and started at 00:01. The occupancy level at bust stop 43 is:
+<bot>:  1
+
+O experimento se aplicou a 3 redes, TinyLlama-1.1B-Chat-v1.0, mistral-7b-v0.3-bnb-4bi, microsoft/phi-2, todas essas devidamente configuradas e quantizadas conforme recurso de hardware disponível, I7 com 32gb de ram e placa de vídeo 3060.
+
+Os experimentos utilizaram python notebook com uma classe em que abstrai o código de teste e conversão dos dados, bem como a construção dos modelos, respeitando-se as configurações de cada e limitações do hardware.
+
+Cite também durante parte desse artigo, que estou usando pytorch, unsloth e HuggingFace  para fine tune.
+
+
+Os resultados para mistral (unsloth/mistral-7b-v0.3-bnb-4bit) foram:
+
+Question 1
+<human>: Saturday, no rain and warm, route 1865, scheduled at 00:01 and started at 00:04. The occupancy level at bust stop 1446 is:
+<bot>: 
+**** resp was <human>: Saturday, no rain and warm, route 1865, scheduled at 00:01 and started at 00:04. The occupancy level at bust stop 1446 is:
+<bot>: 100%
+**** but correct would be <human>: Saturday, no rain and warm, route 1865, scheduled at 00:01 and started at 00:04. The occupancy level at bust stop 1446 is:
+<bot>: 0
+
+
+Question 2
+<human>: Saturday, no rain and warm, route 1865, scheduled at 00:01 and started at 00:04. The occupancy level at bust stop 185 is:
+<bot>: 
+**** resp was <human>: Saturday, no rain and warm, route 1865, scheduled at 00:01 and started at 00:04. The occupancy level at bust stop 185 is:
+<bot>: 100%
+**** but correct would be <human>: Saturday, no rain and warm, route 1865, scheduled at 00:01 and started at 00:04. The occupancy level at bust stop 185 is:
+<bot>: 1
+
+Question 3 - 
+
+<human>: Saturday, no rain and warm, route 4040, scheduled at 00:50 and started at 00:54. The occupancy level at bust stop 755 is:
+<bot>: 
+**** resp was <human>: Saturday, no rain and warm, route 4040, scheduled at 00:50 and started at 00:54. The occupancy level at bust stop 755 is:
+<bot>: 100%
+
+**** but correct would be <human>: Saturday, no rain and warm, route 4040, scheduled at 00:50 and started at 00:54. The occupancy level at bust stop 755 is:
+<bot>: 2
+
+
+
+
+Os resultados para microsoft/phi-2 foram:
+
+Question 1
+<human>: Saturday, no rain and warm, route 1865, scheduled at 00:01 and started at 00:04. The occupancy level at bust stop 1446 is:
+<bot>: 
+**** resp was <human>: Saturday, no rain and warm, route 1865, scheduled at 00:01 and started at 00:04. The occupancy level at bust stop 1446 is:
+<bot>: 
+<human>: 
+**** but correct would be <human>: Saturday, no rain and warm, route 1865, scheduled at 00:01 and started at 00:04. The occupancy level at bust stop 1446 is:
+<bot>: 0
+
+Question 2
+<human>: Saturday, no rain and warm, route 1865, scheduled at 00:01 and started at 00:04. The occupancy level at bust stop 185 is:
+<bot>: 
+Setting `pad_token_id` to `eos_token_id`:50256 for open-end generation.
+**** resp was <human>: Saturday, no rain and warm, route 1865, scheduled at 00:01 and started at 00:04. The occupancy level at bust stop 185 is:
+<bot>: 
+<human>: 
+**** but correct would be <human>: Saturday, no rain and warm, route 1865, scheduled at 00:01 and started at 00:04. The occupancy level at bust stop 185 is:
+<bot>: 1
+
+Question 3
+<human>: Saturday, no rain and warm, route 4040, scheduled at 00:50 and started at 00:54. The occupancy level at bust stop 755 is:
+<bot>: 
+**** resp was <human>: Saturday, no rain and warm, route 4040, scheduled at 00:50 and started at 00:54. The occupancy level at bust stop 755 is:
+<bot>: 
+<human>: 
+**** but correct would be <human>: Saturday, no rain and warm, route 4040, scheduled at 00:50 and started at 00:54. The occupancy level at bust stop 755 is:
+<bot>: 2
+
+
+
+Os resultados para TinyLlama/TinyLlama-1.1B-Chat-v1.0 foram:
+
+Question 1
+<human>: Saturday, no rain and warm, route 1865, scheduled at 00:01 and started at 00:04. The occupancy level at bust stop 1446 is:
+<bot>: 
+**** resp was <human>: Saturday, no rain and warm, route 1865, scheduled at 00:01 and started at 00:04. The occupancy level at bust stop 1446 is:
+<bot>: 100% occup
+**** but correct would be <human>: Saturday, no rain and warm, route 1865, scheduled at 00:01 and started at 00:04. The occupancy level at bust stop 1446 is:
+<bot>: 0
+
+Question 2
+<human>: Saturday, no rain and warm, route 1865, scheduled at 00:01 and started at 00:04. The occupancy level at bust stop 185 is:
+<bot>: 
+**** resp was <human>: Saturday, no rain and warm, route 1865, scheduled at 00:01 and started at 00:04. The occupancy level at bust stop 185 is:
+<bot>: 100%
+**** but correct would be <human>: Saturday, no rain and warm, route 1865, scheduled at 00:01 and started at 00:04. The occupancy level at bust stop 185 is:
+<bot>: 1
+
+Question 3
+<human>: Saturday, no rain and warm, route 4040, scheduled at 00:50 and started at 00:54. The occupancy level at bust stop 755 is:
+<bot>: 
+**** resp was <human>: Saturday, no rain and warm, route 4040, scheduled at 00:50 and started at 00:54. The occupancy level at bust stop 755 is:
+<bot>: 100% occup
+**** but correct would be <human>: Saturday, no rain and warm, route 4040, scheduled at 00:50 and started at 00:54. The occupancy level at bust stop 755 is:
+<bot>: 2
