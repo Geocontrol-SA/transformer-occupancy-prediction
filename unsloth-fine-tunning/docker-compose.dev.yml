@@ -1,0 +1,58 @@
+version: "3.7"
+services:
+  database:
+    image: postgis/postgis:17-3.5
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - ./var/lib/postgresql/data:/var/lib/postgresql/data
+      - ./migrations/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - /tmp/:/tmp/
+      # - database_data2:/var/lib/postgresql/data
+    # restart: unless-stopped
+    command: ["postgres", "-c", "log_statement=all"]
+    hostname: database
+    networks:
+      - bus_occupancy_prediction
+    ports:
+      - ${DB_PORT}:5432
+
+  pgadmin4:
+    image: dpage/pgadmin4:9
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@pgadmin.com
+      - PGADMIN_DEFAULT_PASSWORD=pgadmin007
+      - PGADMIN_LISTEN_ADDRESS=0.0.0.0
+    ports:
+      - "${PG_ADMIN_PORT}:80"
+    # volumes:
+    #   - /tmp/:/tmp/
+    #  - /tmp:/var/lib/pgadmin/storage/admin_pgadmin.com/
+
+    depends_on:
+      - database
+    networks:
+      - bus_occupancy_prediction
+    restart: unless-stopped
+    hostname: pgadmin4
+
+networks:
+  bus_occupancy_prediction:
+
+volumes:
+  database_data:
+    # name: database_data
+    driver: local
+    # driver_opts:
+    #   type: 'none'
+    #   o: 'bind'
+    #   device: './var'
+
+  # database_data2:
+  #   driver: local
+  #   driver_opts:
+  #     type: 'none'
+  #     o: 'bind'
+  #     device: '/media/bkp/docker/volumes/pg14_agrocontrol'
