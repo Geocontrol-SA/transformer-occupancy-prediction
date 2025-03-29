@@ -22,7 +22,8 @@ More information about the model can be found in the [README](pytorch-model/READ
 
 ##### 2. Unsloth Fine-tuning
 
-The unsloth finetuning is located in the [unsloth-fine-tunning](unsloth-fine-tunning/README.md) folder.
+The unsloth finetuning is located in the [unsloth-fine-tunning](unsloth-fine-tunning) folder.
+More information about it can be found in the [README](unsloth-fine-tunning/README.md) file.
 
 ##### 3. Report
 
